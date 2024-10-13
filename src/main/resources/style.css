@@ -1,0 +1,59 @@
+.root {
+    -fx-background-image: url("images/image.png");
+    -fx-background-size: cover;
+    -fx-background-position: center;
+}
+/* Estilo do contêiner principal */
+.container {
+    -fx-alignment: center;   /* Centraliza o conteúdo */
+    -fx-padding: 20px;
+    -fx-spacing: 15px;
+}
+
+/* Estilo do título para centralizar e destacar */
+.label-title {
+    -fx-text-fill: #FFFFFF; /* Cor branca */
+    -fx-font-size: 24px;    /* Tamanho da fonte maior */
+    -fx-font-weight: bold;  /* Deixar o texto em negrito */
+    -fx-alignment: center;  /* Centralizar o texto horizontalmente */
+    -fx-effect: dropshadow( gaussian , rgba(0,0,0,0.75) , 4,0.5,0,1 ); /* Sombra no texto */
+    -fx-padding: 10px;
+    -fx-max-width: infinity; /* Permitir que o texto ocupe a largura máxima */
+    -fx-text-alignment: center; /* Centralizar o texto */
+}
+
+/* Ajuste para os botões */
+.button {
+    -fx-background-color: #4CAF50; /* Cor verde para os botões */
+    -fx-text-fill: white;  /* Texto branco */
+    -fx-border-radius: 12px;
+    -fx-background-radius: 12px;
+    -fx-padding: 12px 20px;
+    -fx-font-size: 14px;
+    -fx-pref-width: 350px; /* Largura ajustada */
+    -fx-effect: dropshadow( gaussian , rgba(0,0,0,0.75) , 4,0.3,0,1 );
+    -fx-alignment: center;  /* Centraliza o texto dentro do botão */
+}
+
+/* Campo de texto centralizado */
+.text-field {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #4CAF50;
+    -fx-border-radius: 12px;
+    -fx-padding: 10px 20px;
+    -fx-font-size: 16px;
+    -fx-pref-width: 400px;
+    -fx-alignment: center; /* Centraliza o texto */
+}
+
+/* ListView ajustado */
+.list-view {
+    -fx-background-color: #f4f4f4;
+    -fx-border-radius: 12px;
+    -fx-border-color: #4CAF50;
+    -fx-padding: 12 20;
+    -fx-font-size: 14px;
+    -fx-pref-width: 700px;
+    -fx-pref-height: 300px;
+    -fx-alignment: center; /* Centraliza o conteúdo dentro do ListView */
+}
