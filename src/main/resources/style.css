@@ -80,3 +80,21 @@
     -fx-font-family: 'PressStart2P-Regular.ttf', sans-serif;
     -fx-font-size: 12px;
 }
+
+date-picker .popup {
+     -fx-font-size: 10px;  /* Reduz o tamanho da fonte dentro do popup */
+ }
+
+.date-picker .calendar-pane {
+    -fx-pref-width: 180px;  /* Ajusta a largura do popup */
+    -fx-pref-height: 180px; /* Ajusta a altura do popup */
+}
+
+.date-picker .calendar-pane .month-year-pane {
+    -fx-font-size: 10px;  /* Ajusta o tamanho da fonte no cabeçalho do mês/ano */
+}
+
+.date-picker .calendar-pane .day-cell {
+    -fx-pref-width: 30px;  /* Ajusta a largura das células */
+    -fx-pref-height: 30px; /* Ajusta a altura das células */
+}
