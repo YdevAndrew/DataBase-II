@@ -353,19 +353,35 @@ public class MainApp extends Application {
     private void removePixelArt() {
         String selected = pixelArtListView.getSelectionModel().getSelectedItem();
         if (selected != null) {
-            pixelArtController.removePixelArt(selected);
+            String name = extractNameFromItem(selected); // Extrair apenas o nome
+            pixelArtController.removePixelArt(name);  // Remover pelo nome
         }
     }
 
     private void editPixelArt() {
         String selected = pixelArtListView.getSelectionModel().getSelectedItem();
         if (selected != null) {
-            String newName = nameField.getText();
-            if (!newName.isEmpty()) {
-                pixelArtController.editPixelArt(selected, newName);
-                nameField.clear();
-            }
+            // Extraímos o nome original sem o status
+            String originalName = selected.split(" \\(")[0];
+
+            // Criar um TextInputDialog para editar o nome
+            TextInputDialog dialog = new TextInputDialog(originalName);
+            dialog.setTitle("Editar PixelArt");
+            dialog.setHeaderText("Editar nome da PixelArt");
+            dialog.setContentText("Novo nome:");
+
+            // Exibir o diálogo e capturar a resposta
+            dialog.showAndWait().ifPresent(newName -> {
+                if (!newName.isEmpty()) {
+                    pixelArtController.editPixelArt(originalName, newName);
+                    loadPixelArtsToListView(); // Atualizar a lista após a edição
+                }
+            });
         }
+    }
+    // Função auxiliar para extrair o nome da tarefa
+    private String extractNameFromItem(String item) {
+        return item.split(" \\(")[0];  // Divide a string e retorna apenas o nome antes de "("
     }
 
     public static void main(String[] args) {
