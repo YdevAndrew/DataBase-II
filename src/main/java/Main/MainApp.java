@@ -295,7 +295,7 @@ public class MainApp extends Application {
             itemLabel.setStyle("-fx-text-fill: red;"); // A cor do texto da tarefa é vermelho
             addDragAndDropHandlers(itemLabel);
 
-            // Carregar o GIF (pode usar gifs diferentes para cada status)
+
             ImageView taskGif;
             if ("In Progress".equals(art.getStatus())) {
                 taskGif = new ImageView(saitamaGif);  // GIF para tarefas "In Progress"
