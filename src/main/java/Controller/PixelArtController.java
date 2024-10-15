@@ -20,21 +20,21 @@ public class PixelArtController {
         pixelArtCollection = database.getCollection("pixelarts");
     }
 
-    // Método para atualizar o status da PixelArt no banco de dados
+    //Método para atualizar o status da PixelArt no banco de dados
     public void updatePixelArtStatus(String name, String status) {
         Document query = new Document("name", name);
         Document update = new Document("$set", new Document("status", status));
         pixelArtCollection.updateOne(query, update);
     }
 
-    // Método para obter todas as PixelArts do banco de dados
+    //Método para obter todas as PixelArts do banco de dados
     public List<PixelArt> getAllPixelArts() {
         List<PixelArt> pixelArts = new ArrayList<>();
         for (Document doc : pixelArtCollection.find()) {
             String name = doc.getString("name");
             boolean isCompleted = doc.getBoolean("isCompleted", false);
             String status = doc.getString("status");
-            pixelArts.add(new PixelArt(name, isCompleted, status));
+            pixelArts.add(new PixelArt(name, status));
         }
         return pixelArts;
     }

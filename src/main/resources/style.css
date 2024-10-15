@@ -57,3 +57,26 @@
     -fx-pref-height: 300px;
     -fx-alignment: center; /* Centraliza o conteúdo dentro do ListView */
 }
+
+/* style.css */
+.kanban-column {
+    -fx-background-color: #ececec;
+    -fx-border-color: #ccc;
+}
+
+.kanban-column-title {
+    -fx-font-size: 14px;
+    -fx-font-family: 'PressStart2P-Regular.ttf', sans-serif;
+    -fx-font-weight: bold;
+    -fx-text-fill: blue;
+
+}
+
+.kanban-item {
+    -fx-background-color: #f0f0f0;
+    -fx-text-fill: blue;
+    -fx-padding: 10px;
+    -fx-border-color: #dcdcdc;
+    -fx-font-family: 'PressStart2P-Regular.ttf', sans-serif;
+    -fx-font-size: 12px;
+}

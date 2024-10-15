@@ -5,7 +5,7 @@ public class PixelArt {
     private boolean isCompleted;
     private String status;  // Novo campo para armazenar o status (To-Do, In Progress, Done)
 
-    public PixelArt(String name, boolean isCompleted, String status) {
+    public PixelArt(String name, String status) {
         this.name = name;
         this.isCompleted = isCompleted;
         this.status = status;

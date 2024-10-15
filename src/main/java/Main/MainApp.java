@@ -4,9 +4,12 @@ import Controller.PixelArtController;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.ImageCursor;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
@@ -21,18 +24,29 @@ import java.util.Map;
 public class MainApp extends Application {
 
     private TextField nameField;
+    private Image snorlaxGif;
+    private Image saitamaGif;
     private PixelArtController pixelArtController;
     private Stage primaryStage;
     private ListView<String> pixelArtListView;
     private Map<String, VBox> kanbanColumns = new HashMap<>();
-    private Map<String, String> pixelArtStatus = new HashMap<>();  // Map para armazenar o status das tarefas
+    private Map<String, String> pixelArtStatus = new HashMap<>();
+    private ImageCursor customCursor;
+    private Font pressStartFont;
 
     @Override
     public void start(Stage stage) {
         this.primaryStage = stage;
 
+        // Carregamento dos GIFs
+        snorlaxGif = new Image(getClass().getResourceAsStream("/images/snorlax-sleeping.gif"));
+        saitamaGif = new Image(getClass().getResourceAsStream("/images/saitama.gif"));
+
+
         // Carregar a fonte "Press Start 2P"
-        Font.loadFont(getClass().getResource("/fonts/PressStart2P-Regular.ttf").toExternalForm(), 12);
+        pressStartFont = Font.loadFont(
+                getClass().getResource("/fonts/PressStart2P-Regular.ttf").toExternalForm(), 12
+        );
 
         // Inicializar o controlador e conectar ao MongoDB
         pixelArtController = new PixelArtController();
@@ -41,11 +55,17 @@ public class MainApp extends Application {
         // Configurar a interface gráfica
         stage.setTitle("PixelArt To-Do List");
 
-        // Layout principal com as funcionalidades originais
+        // Layout principal
         VBox layout = createMainLayout();
 
+        // Cursor personalizado
+        Image marioCursorImage = new Image(getClass().getResourceAsStream("/images/Mario cursor.png"));
+        customCursor = new ImageCursor(marioCursorImage);
+
+        // Definir a cena principal
         Scene scene = new Scene(layout, 400, 400);
         scene.getStylesheets().add(getClass().getResource("/style.css").toExternalForm());
+        scene.setCursor(customCursor);
 
         stage.setScene(scene);
         stage.show();
@@ -53,87 +73,104 @@ public class MainApp extends Application {
 
     private VBox createMainLayout() {
         VBox layout = new VBox(10);
-        layout.setPadding(new Insets(20, 20, 20, 20));
+        layout.setPadding(new Insets(20));
+        layout.setAlignment(Pos.CENTER);
 
-        // Título centralizado
+        // Configurar o título com a fonte personalizada
         Label titleLabel = new Label("Nome da PixelArt:");
-        titleLabel.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
-        titleLabel.setMaxWidth(Double.MAX_VALUE);
-        titleLabel.setAlignment(Pos.CENTER); // Centraliza o título
+        titleLabel.setFont(pressStartFont); // Aplicando a fonte aqui
+        titleLabel.setStyle("-fx-font-family: 'Press Start 2P'; -fx-font-size: 14px;");
 
-        // Campo de entrada para o nome da PixelArt
+        // Configurar o TextField com a fonte personalizada
         nameField = new TextField();
+        nameField.setFont(pressStartFont);
         nameField.setPromptText("Digite o nome da PixelArt");
+        nameField.setStyle("-fx-font-family: 'Press Start 2P'; -fx-font-size: 12px;");
 
-        // ListView para exibir as PixelArts adicionadas
-        pixelArtListView = new ListView<>();
-        loadPixelArtsToListView(); // Carregar PixelArts no ListView
-
-        // Botão para alternar para o layout Kanban expansível
-        Button toggleLayoutButton = new Button("Ir para o Layout Expansível (Kanban)");
-        toggleLayoutButton.setOnAction(e -> showKanbanLayout());
-
-        // Botões de funcionalidades originais (adicionar, remover, editar)
-        Button addButton = new Button("Adicionar PixelArt");
+        // Configuração dos botões
+        Button addButton = createStyledButton("Adicionar PixelArt");
         addButton.setOnAction(e -> {
             addPixelArt();
-            loadPixelArtsToListView(); // Atualizar lista ao adicionar
+            loadPixelArtsToListView();
         });
 
-        Button removeButton = new Button("Remover PixelArt");
+        Button removeButton = createStyledButton("Remover PixelArt");
         removeButton.setOnAction(e -> {
             removePixelArt();
-            loadPixelArtsToListView(); // Atualizar lista ao remover
+            loadPixelArtsToListView();
         });
 
-        Button editButton = new Button("Editar PixelArt");
+        Button editButton = createStyledButton("Editar PixelArt");
         editButton.setOnAction(e -> {
             editPixelArt();
-            loadPixelArtsToListView(); // Atualizar lista ao editar
+            loadPixelArtsToListView();
         });
 
-        layout.getChildren().addAll(titleLabel, nameField, addButton, removeButton, editButton, toggleLayoutButton, pixelArtListView);
+        Button toggleLayoutButton = createStyledButton("Ir para o Layout Expansível (Kanban)");
+        toggleLayoutButton.setOnAction(e -> showKanbanLayout());
 
-        // Aplicar a fonte estilo pixel art
-        layout.setStyle("-fx-font-family: 'Press Start 2P', sans-serif; -fx-font-size: 12px;");
+        // ListView configurado com a fonte personalizada
+        pixelArtListView = new ListView<>();
+        pixelArtListView.setStyle("-fx-font-family: 'Press Start 2P'; -fx-font-size: 12px;");
+        loadPixelArtsToListView();
+
+        // Adicionar todos os elementos ao layout principal
+        layout.getChildren().addAll(
+                titleLabel, nameField, addButton, removeButton, editButton, toggleLayoutButton, pixelArtListView
+        );
 
         return layout;
     }
 
-    // Mostrar o layout Kanban expansível
+    // Método para criar botões estilizados com a fonte
+    private Button createStyledButton(String text) {
+        Button button = new Button(text);
+        button.setFont(pressStartFont);
+        button.setStyle("-fx-font-family: 'Press Start 2P'; -fx-font-size: 12px;");
+        return button;
+    }
+
     private void showKanbanLayout() {
         Pane kanbanPane = new Pane();
         kanbanPane.setPrefSize(1000, 600);
+
+        Image backgroundImage = new Image(getClass().getResourceAsStream("/images/background  kanban.gif"));
+        BackgroundSize backgroundSize = new BackgroundSize(
+                BackgroundSize.AUTO, BackgroundSize.AUTO, false, false, true, true
+        );
+        BackgroundImage background = new BackgroundImage(
+                backgroundImage, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize
+        );
+        kanbanPane.setBackground(new Background(background));
 
         VBox todoColumn = createKanbanColumn("To-Do");
         VBox inProgressColumn = createKanbanColumn("In Progress");
         VBox doneColumn = createKanbanColumn("Done");
 
         todoColumn.setLayoutX(50);
-        todoColumn.setLayoutY(50);
         inProgressColumn.setLayoutX(350);
-        inProgressColumn.setLayoutY(50);
         doneColumn.setLayoutX(650);
-        doneColumn.setLayoutY(50);
 
         kanbanPane.getChildren().addAll(todoColumn, inProgressColumn, doneColumn);
 
         Button returnButton = new Button("Voltar ao Layout Original");
+        returnButton.setFont(pressStartFont);
         returnButton.setLayoutX(850);
         returnButton.setLayoutY(550);
         returnButton.setOnAction(e -> {
             VBox mainLayout = createMainLayout();
             Scene scene = new Scene(mainLayout, 400, 400);
-            scene.getStylesheets().add(getClass().getResource("/style.css").toExternalForm()); // Reaplicar o estilo CSS
-            loadPixelArtsToListView(); // Atualizar lista com status atualizado
+            scene.getStylesheets().add(getClass().getResource("/style.css").toExternalForm());
+            scene.setCursor(customCursor);
+            loadPixelArtsToListView();
             primaryStage.setScene(scene);
         });
 
         kanbanPane.getChildren().add(returnButton);
 
         Scene kanbanScene = new Scene(kanbanPane, 1000, 600);
+        kanbanScene.setCursor(customCursor);
         primaryStage.setScene(kanbanScene);
-        primaryStage.show();
 
         loadPixelArtsToKanban(todoColumn, inProgressColumn, doneColumn);
     }
@@ -142,12 +179,20 @@ public class MainApp extends Application {
         VBox column = new VBox(10);
         column.setPadding(new Insets(10));
         column.setPrefSize(250, 500);
-        column.setStyle("-fx-border-color: black; -fx-border-width: 2px;");
 
         Label columnTitle = new Label(columnName);
-        columnTitle.setStyle("-fx-font-weight: bold; -fx-font-size: 16px;");
+        columnTitle.setFont(pressStartFont);
+
+        // Definindo a cor do texto para cada coluna
+        switch (columnName) {
+            case "To-Do" -> columnTitle.setStyle("-fx-text-fill: #5DADE2;");
+            case "In Progress" -> columnTitle.setStyle("-fx-text-fill: #3498DB;");
+            case "Done" -> columnTitle.setStyle("-fx-text-fill: #2E86C1;");
+        }
+
         column.getChildren().add(columnTitle);
 
+        // Configuração de Drag and Drop
         column.setOnDragOver(event -> {
             if (event.getGestureSource() != column && event.getDragboard().hasString()) {
                 event.acceptTransferModes(TransferMode.MOVE);
@@ -159,19 +204,28 @@ public class MainApp extends Application {
             Dragboard db = event.getDragboard();
             boolean success = false;
             if (db.hasString()) {
+                // Remover a tarefa da coluna anterior
+                Node source = (Node) event.getGestureSource();
+                if (source.getParent() instanceof VBox sourceColumn) {
+                    sourceColumn.getChildren().remove(source);  // Remover o item da coluna anterior
+                }
+
+                // Adicionar a tarefa à nova coluna
                 Label draggedLabel = new Label(db.getString());
+                draggedLabel.setFont(pressStartFont);
                 addDragAndDropHandlers(draggedLabel);
                 column.getChildren().add(draggedLabel);
 
-                // Atualizar o status da PixelArt no Map e no MongoDB
+                // Atualizar o status da tarefa
                 String taskName = draggedLabel.getText();
-                String columnNameLocal = ((Label) column.getChildren().get(0)).getText();
-                pixelArtStatus.put(taskName, columnNameLocal);
-                pixelArtController.updatePixelArtStatus(taskName, columnNameLocal); // Atualizar no banco de dados
+                String newStatus = columnTitle.getText();
+                pixelArtStatus.put(taskName, newStatus);
 
-                Node source = (Node) event.getGestureSource();
-                VBox sourceColumn = (VBox) source.getParent();
-                sourceColumn.getChildren().remove(source);
+                // Atualizar o status no banco de dados
+                pixelArtController.updatePixelArtStatus(taskName, newStatus);
+
+                // Atualizar visualmente o Kanban imediatamente
+                updateKanbanView();
 
                 success = true;
             }
@@ -183,104 +237,135 @@ public class MainApp extends Application {
         return column;
     }
 
-    // Carregar as PixelArts em suas respectivas colunas no layout Kanban
-    private void loadPixelArtsToKanban(VBox todoColumn, VBox inProgressColumn, VBox doneColumn) {
+    private void updateKanbanView() {
+        // Limpar as colunas do Kanban
+        kanbanColumns.forEach((key, column) -> {
+            // Armazenar o título da coluna
+            Label columnTitle = new Label(key);
+            columnTitle.setFont(pressStartFont);
+            switch (key) {
+                case "To-Do" -> columnTitle.setStyle("-fx-text-fill: #5DADE2;");
+                case "In Progress" -> columnTitle.setStyle("-fx-text-fill: #3498DB;");
+                case "Done" -> columnTitle.setStyle("-fx-text-fill: #2E86C1;");
+            }
+
+            // Limpar a coluna mantendo o título
+            column.getChildren().clear();
+            column.getChildren().add(columnTitle);  // Adiciona o título novamente após limpar
+        });
+
+        // Recarregar as tarefas do banco de dados e atualizar as colunas
         List<PixelArt> pixelArts = pixelArtController.getAllPixelArts();
         for (PixelArt art : pixelArts) {
+            // Criar um Label com o nome da tarefa
             Label itemLabel = new Label(art.getName());
+            itemLabel.setFont(pressStartFont);
+            itemLabel.setStyle("-fx-text-fill: red;"); // A cor do texto da tarefa é vermelho
             addDragAndDropHandlers(itemLabel);
 
-            // Verificar o status da PixelArt e colocar na coluna apropriada
-            String status = art.getStatus();
-            if (status.equals("In Progress")) {
-                inProgressColumn.getChildren().add(itemLabel);
-            } else if (status.equals("Done")) {
-                doneColumn.getChildren().add(itemLabel);
+            // Carregar o GIF (pode usar gifs diferentes para cada status)
+            ImageView taskGif;
+            if ("In Progress".equals(art.getStatus())) {
+                taskGif = new ImageView(saitamaGif);  // GIF para tarefas "In Progress"
             } else {
-                todoColumn.getChildren().add(itemLabel);
+                taskGif = new ImageView(snorlaxGif);  // GIF para tarefas "To-Do" e "Done"
+            }
+            taskGif.setFitHeight(30); // Ajustar o tamanho do GIF
+            taskGif.setFitWidth(30);
+
+            // Criar um HBox para alinhar o nome da tarefa e o GIF
+            HBox taskWithGif = new HBox(10); // Espaçamento de 10px entre o Label e o GIF
+            taskWithGif.getChildren().addAll(itemLabel, taskGif);
+
+            // Adicionar a tarefa na coluna correta
+            switch (art.getStatus()) {
+                case "In Progress" -> kanbanColumns.get("In Progress").getChildren().add(taskWithGif);
+                case "Done" -> kanbanColumns.get("Done").getChildren().add(taskWithGif);
+                default -> kanbanColumns.get("To-Do").getChildren().add(taskWithGif);
             }
         }
     }
 
-    private void addDragAndDropHandlers(Label label) {
-        label.setOnDragDetected(event -> {
-            Dragboard db = label.startDragAndDrop(TransferMode.MOVE);
+    private void loadPixelArtsToKanban(VBox todoColumn, VBox inProgressColumn, VBox doneColumn) {
+        List<PixelArt> pixelArts = pixelArtController.getAllPixelArts();
+        for (PixelArt art : pixelArts) {
+            // Criar um Label com o nome da tarefa
+            Label itemLabel = new Label(art.getName());
+            itemLabel.setFont(pressStartFont);
+            itemLabel.setStyle("-fx-text-fill: red;"); // A cor do texto da tarefa é vermelho
+            addDragAndDropHandlers(itemLabel);
+
+            // Carregar o GIF (pode usar gifs diferentes para cada status)
+            ImageView taskGif;
+            if ("In Progress".equals(art.getStatus())) {
+                taskGif = new ImageView(saitamaGif);  // GIF para tarefas "In Progress"
+            } else {
+                taskGif = new ImageView(snorlaxGif);  // GIF para tarefas "To-Do" e "Done"
+            }
+            taskGif.setFitHeight(30); // Ajustar o tamanho do GIF
+            taskGif.setFitWidth(30);
+
+            // Criar um HBox para alinhar o nome da tarefa e o GIF
+            HBox taskWithGif = new HBox(10); // Espaçamento de 10px entre o Label e o GIF
+            taskWithGif.getChildren().addAll(itemLabel, taskGif);
+
+            // Adicionar a tarefa na coluna correta
+            switch (art.getStatus()) {
+                case "In Progress" -> inProgressColumn.getChildren().add(taskWithGif);
+                case "Done" -> doneColumn.getChildren().add(taskWithGif);
+                default -> todoColumn.getChildren().add(taskWithGif);
+            }
+        }
+    }
+    private void addDragAndDropHandlers(Label itemLabel) {
+        // Definindo a cor do texto para vermelho
+        itemLabel.setStyle("-fx-text-fill: red;");
+
+        itemLabel.setOnDragDetected(event -> {
+            Dragboard db = itemLabel.startDragAndDrop(TransferMode.MOVE);
             ClipboardContent content = new ClipboardContent();
-            content.putString(label.getText());
+            content.putString(itemLabel.getText());
             db.setContent(content);
             event.consume();
         });
+    }
 
-        label.setOnDragDone(event -> event.consume());
+    private void loadPixelArtsToListView() {
+        pixelArtListView.getItems().clear();
+        List<PixelArt> pixelArts = pixelArtController.getAllPixelArts();
+
+        // Para cada PixelArt, mostrar nome + status
+        pixelArts.forEach(art -> {
+            String itemText = art.getName() + " (" + art.getStatus() + ")";
+            pixelArtListView.getItems().add(itemText);
+        });
     }
 
     private void addPixelArt() {
         String name = nameField.getText();
         if (!name.isEmpty()) {
-            PixelArt newArt = new PixelArt(name, false, "To-Do");
-            pixelArtController.addPixelArt(newArt);
-            pixelArtStatus.put(name, "To-Do"); // Adicionar novo PixelArt com status "To-Do"
-            loadPixelArtsToListView(); // Atualizar o layout original
+            PixelArt pixelArt = new PixelArt(name, "To-Do");
+            pixelArtController.addPixelArt(pixelArt);
             nameField.clear();
-        } else {
-            showAlert("Erro", "O nome da PixelArt não pode ser vazio.");
         }
     }
 
     private void removePixelArt() {
-        String name = nameField.getText();
-        if (!name.isEmpty()) {
-            pixelArtController.removePixelArt(name);
-            pixelArtStatus.remove(name); // Remover o status ao remover a PixelArt
-            loadPixelArtsToListView(); // Atualizar o layout original
-            nameField.clear();
-        } else {
-            showAlert("Erro", "O nome da PixelArt não pode ser vazio.");
+        String selected = pixelArtListView.getSelectionModel().getSelectedItem();
+        if (selected != null) {
+            pixelArtController.removePixelArt(selected);
         }
     }
 
     private void editPixelArt() {
-        // Verificar se o usuário selecionou uma PixelArt na lista
-        String selectedArt = pixelArtListView.getSelectionModel().getSelectedItem();
-
-        if (selectedArt != null) {
-            // Exibir um campo para o usuário digitar o novo nome
-            TextInputDialog dialog = new TextInputDialog(selectedArt);
-            dialog.setTitle("Editar PixelArt");
-            dialog.setHeaderText(null);
-            dialog.setContentText("Novo nome para a PixelArt:");
-
-            // Mostrar o diálogo e pegar o novo nome do usuário
-            dialog.showAndWait().ifPresent(newName -> {
-                if (!newName.isEmpty()) {
-                    // Atualizar o nome da PixelArt no banco de dados
-                    pixelArtController.editPixelArt(selectedArt, newName);
-
-                    // Atualizar a ListView
-                    loadPixelArtsToListView();
-                } else {
-                    showAlert("Erro", "O novo nome da PixelArt não pode ser vazio.");
-                }
-            });
-        } else {
-            showAlert("Erro", "Por favor, selecione uma PixelArt para editar.");
+        String selected = pixelArtListView.getSelectionModel().getSelectedItem();
+        if (selected != null) {
+            String newName = nameField.getText();
+            if (!newName.isEmpty()) {
+                pixelArtController.editPixelArt(selected, newName);
+                nameField.clear();
+            }
         }
-    }
-
-    private void loadPixelArtsToListView() {
-        List<PixelArt> pixelArts = pixelArtController.getAllPixelArts();
-        pixelArtListView.getItems().clear();
-        for (PixelArt art : pixelArts) {
-            pixelArtListView.getItems().add(art.getName());
-        }
-    }
-
-    private void showAlert(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
     }
 
     public static void main(String[] args) {
