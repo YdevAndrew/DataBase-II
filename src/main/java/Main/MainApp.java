@@ -38,31 +38,31 @@ public class MainApp extends Application {
     public void start(Stage stage) {
         this.primaryStage = stage;
 
-        // Carregamento dos GIFs
+
         snorlaxGif = new Image(getClass().getResourceAsStream("/images/snorlax-sleeping.gif"));
         saitamaGif = new Image(getClass().getResourceAsStream("/images/saitama.gif"));
 
 
-        // Carregar a fonte "Press Start 2P"
+
         pressStartFont = Font.loadFont(
                 getClass().getResource("/fonts/PressStart2P-Regular.ttf").toExternalForm(), 12
         );
 
-        // Inicializar o controlador e conectar ao MongoDB
+
         pixelArtController = new PixelArtController();
         pixelArtController.connectToMongoDB();
 
-        // Configurar a interface gráfica
+
         stage.setTitle("PixelArt To-Do List");
 
-        // Layout principal
+
         VBox layout = createMainLayout();
 
-        // Cursor personalizado
+
         Image marioCursorImage = new Image(getClass().getResourceAsStream("/images/Mario cursor.png"));
         customCursor = new ImageCursor(marioCursorImage);
 
-        // Definir a cena principal
+
         Scene scene = new Scene(layout, 400, 400);
         scene.getStylesheets().add(getClass().getResource("/style.css").toExternalForm());
         scene.setCursor(customCursor);
@@ -81,7 +81,7 @@ public class MainApp extends Application {
         titleLabel.setFont(pressStartFont); // Aplicando a fonte aqui
         titleLabel.setStyle("-fx-font-family: 'Press Start 2P'; -fx-font-size: 14px;");
 
-        // Configurar o TextField com a fonte personalizada
+        // TextField com a fonte personalizada
         nameField = new TextField();
         nameField.setFont(pressStartFont);
         nameField.setPromptText("Digite o nome da PixelArt");
