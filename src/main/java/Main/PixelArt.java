@@ -5,14 +5,14 @@ import java.time.LocalDate;
 public class PixelArt {
     private String name;
     private boolean isCompleted;
-    private String status;  // Novo campo para armazenar o status (To-Do, In Progress, Done)
-    private LocalDate startDate;  // Data de início
-    private LocalDate endDate;    // Data de término
+    private String status;
+    private LocalDate startDate;
+    private LocalDate endDate;
 
-    // Construtor atualizado com datas
+
     public PixelArt(String name, String status, LocalDate startDate, LocalDate endDate) {
         this.name = name;
-        this.isCompleted = false;  // Inicialmente não concluída
+        this.isCompleted = false;
         this.status = status;
         this.startDate = startDate;
         this.endDate = endDate;

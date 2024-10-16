@@ -224,7 +224,7 @@ public class MainApp extends Application {
         returnButton.setLayoutY(550);
         returnButton.setOnAction(e -> {
             VBox mainLayout = createMainLayout();
-            Scene scene = new Scene(mainLayout, 400, 400);
+            Scene scene = new Scene(mainLayout, 600, 600);
             scene.getStylesheets().add(getClass().getResource("/style.css").toExternalForm());
             scene.setCursor(customCursor);
             loadPixelArtsToListView();
