@@ -1,93 +1,109 @@
-# BD II
+PixelArt To-Do List
 
 
+📋 Descrição
+O PixelArt To-Do List é uma aplicação interativa desenvolvida em Java com JavaFX que permite organizar suas criações de PixelArt em um sistema de tarefas. As tarefas são categorizadas como "To-Do", "In Progress", e "Done", e exibidas em um Kanban board interativo. Animações divertidas de personagens como Snorlax e Saitama ilustram o progresso das suas criações.
 
-## Getting started
+Os dados são armazenados no banco de dados MongoDB usando MongoDB Atlas. Para garantir a segurança, os dados sensíveis (como nomes e status das PixelArts) são protegidos com criptografia AES.
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+🚀 Funcionalidades
+Adicionar, Editar e Remover PixelArts: Crie e gerencie suas PixelArts diretamente na lista de tarefas.
+Kanban Board: Organize suas PixelArts em um quadro Kanban, com status "To-Do", "In Progress", "Done".
+Criptografia AES: As informações sensíveis são criptografadas ao serem salvas no MongoDB.
+Customizações Visuais: Fontes personalizadas e cursores customizados para melhorar a experiência visual.
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+🛠️ Tecnologias Utilizadas
+Java 8+
+JavaFX
+MongoDB Atlas
+Criptografia AES
+Maven (para gerenciamento de dependências)
 
-## Add your files
+📋 Pré-requisitos
+Antes de rodar o projeto, certifique-se de ter o seguinte instalado:
 
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
+Java 8+
+Maven
+Uma conta no MongoDB Atlas com uma instância criada
 
-```
-cd existing_repo
-git remote add origin https://gitlab.com/jala-university1/cohort-3/oficial-pt-desenvolvimento-de-software-2-iso-124.ga.t2.24.m2/se-o-b/group-03/bd-ii.git
-git branch -M main
-git push -uf origin main
-```
+🔧 Como rodar o projeto
+1. Clonar o repositório
+   bash
+   Copiar código
+   git clone https://gitlab.com/andrehugo201203/bd-ii/-/tree/master?ref_type=heads
+   cd pixelart-todo-list
 
-## Integrate with your tools
+2. Configurar o MongoDB Atlas
+   Crie um cluster no MongoDB Atlas.
+   Configure a string de conexão do MongoDB Atlas no código (ou preferencialmente, usando variáveis de ambiente).
+   Nota: Certifique-se de armazenar suas credenciais de conexão de forma segura, por exemplo, usando variáveis de ambiente.
 
-- [ ] [Set up project integrations](https://gitlab.com/jala-university1/cohort-3/oficial-pt-desenvolvimento-de-software-2-iso-124.ga.t2.24.m2/se-o-b/group-03/bd-ii/-/settings/integrations)
+3. Rodar o projeto
+   Compile e execute o projeto usando Maven:
 
-## Collaborate with your team
 
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Set auto-merge](https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
+mvn clean javafx:run
+Isso irá abrir a interface gráfica da aplicação PixelArt To-Do List.
 
-## Test and Deploy
+📁 Estrutura do Projeto
 
-Use the built-in continuous integration in GitLab.
+├── src
+│   ├── main
+│   │   ├── java
+│   │   │   ├── Controller
+│   │   │   │   └── PixelArtController.java    # Lógica para conexão e operações no MongoDB
+│   │   │   ├── Main
+│   │   │   │   ├── MainApp.java               # Interface gráfica da aplicação
+│   │   │   │   └── PixelArt.java              # Modelo da PixelArt com nome, status e datas
+│   │   ├── resources
+│   │   │   ├── images                         # Imagens de background, gifs e cursores
+│   │   │   ├── fonts                          # Fontes personalizadas
+│   │   │   └── style.css                      # Estilos customizados
+│   └── test                                   # Testes unitários (futuros)
+├── pom.xml                                    # Configuração do Maven
+└── README.md
 
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing (SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
+# Documentação do projeto
+🗂️ Explicação dos Arquivos Principais
+MainApp.java: Gerencia a interface gráfica, layouts, botões e interações de arrastar e soltar (Drag & Drop).
+PixelArt.java: Modelo de dados que define uma PixelArt com nome, status, data de início e data de término.
+PixelArtController.java: Responsável pela conexão com o banco de dados MongoDB e pelas operações CRUD (Create, Read, Update, Delete). Implementa também a criptografia AES para proteger dados sensíveis.
 
-***
+🔒 Criptografia AES
+O projeto implementa a criptografia AES para proteger os dados sensíveis (como o nome e o status das PixelArts) armazenados no MongoDB.
 
-# Editing this README
+Como Funciona:
+Criptografia: Antes de salvar os dados no MongoDB, os campos sensíveis são criptografados com a chave AES.
+Descriptografia: Ao buscar os dados do MongoDB, esses campos são descriptografados para serem exibidos corretamente na interface.
+Exemplo de Código de Criptografia:
 
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thanks to [makeareadme.com](https://www.makeareadme.com/) for this template.
+private String encrypt(String data) throws Exception {
+Cipher cipher = Cipher.getInstance(ENCRYPTION_ALGORITHM);
+SecretKey secretKey = new SecretKeySpec(encryptionKey, ENCRYPTION_ALGORITHM);
+cipher.init(Cipher.ENCRYPT_MODE, secretKey);
+byte[] encryptedBytes = cipher.doFinal(data.getBytes());
+return Base64.getEncoder().encodeToString(encryptedBytes);
+}
 
-## Suggestions for a good README
+private String decrypt(String encryptedData) throws Exception {
+Cipher cipher = Cipher.getInstance(ENCRYPTION_ALGORITHM);
+SecretKey secretKey = new SecretKeySpec(encryptionKey, ENCRYPTION_ALGORITHM);
+cipher.init(Cipher.DECRYPT_MODE, secretKey);
+byte[] decryptedBytes = Base64.getDecoder().decode(encryptedData);
+return new String(cipher.doFinal(decryptedBytes));
+}
 
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
+🛠️ Melhorias Futuras
+Testes Unitários: Adicionar testes unitários para validar a integridade das operações do banco de dados e da criptografia.
+Autenticação de Usuários: Implementar um sistema de login para usuários.
+Melhorias Visuais: Tornar o layout mais responsivo e adicionar novas animações e interações visuais.
+Rotação de Chave de Criptografia: Implementar um sistema de rotação de chaves AES para garantir segurança de longo prazo.
 
-## Name
-Choose a self-explaining name for your project.
+🤝 Contribuindo
+Sinta-se à vontade para contribuir com o projeto! Para contribuir:
 
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
-
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
-
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
-
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
-
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
-
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
-
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
-
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
-
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
-
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
-
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
-
-## License
-For open source projects, say how it is licensed.
-
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+Faça um fork do repositório.
+Crie uma branch para sua feature (git checkout -b minha-nova-feature).
+Commit suas mudanças (git commit -am 'Adiciona nova feature').
+Faça push para a branch (git push origin minha-nova-feature).
+Crie um Pull Request.
